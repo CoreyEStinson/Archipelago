@@ -94,6 +94,9 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
     # Scraping copper needs an axe (any tool tier works)
     rule("Lighten Up",             tools(1))
 
+    # Fishing
+    rule("Fishy Business",         has("Fishing Rod"))
+
     # ── Nether (already gated by region, adding extra requirements) ───────
 
     # Mining ancient debris needs diamond pickaxe
@@ -101,9 +104,6 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
 
     # Full netherite armor set — needs netherite tools to mine debris too
     rule("Cover Me in Debris",     armor(3))
-
-    # Both hard potion advancements also require being in the Nether
-    # (already handled by region — Potion rules above still apply there)
 
     # ── Husbandry ─────────────────────────────────────────────────────────
 

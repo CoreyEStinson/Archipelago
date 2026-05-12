@@ -44,7 +44,7 @@ unlock_items: Dict[str, ItemData] = {
     "Spyglass":         ItemData(43013, ItemClassification.useful),
     "Totem of Undying": ItemData(43014, ItemClassification.useful),
     "Turtle Shell":     ItemData(43015, ItemClassification.useful),
-    "Flint and Steel":  ItemData(43016, ItemClassification.useful),
+    "Flint and Steel":  ItemData(43016, ItemClassification.progression),
     "Trident":          ItemData(43017, ItemClassification.useful),
     "Bow":              ItemData(43018, ItemClassification.useful),
     "Fishing Rod":      ItemData(43019, ItemClassification.useful),
