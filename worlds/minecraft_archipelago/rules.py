@@ -60,18 +60,16 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
     # Shield deflect
     rule("Not Today, Thank You",   has("Shield"))
 
-    # Bow advancements
-    rule("Take Aim",               has("Bow"))
-    rule("Sniper Duel",            has("Bow"))
-
     # Crossbow advancements
     rule("Ol' Betsy",              has("Crossbow"))
     rule("Two Birds, One Arrow",   has("Crossbow"))
     rule("Who's the Pillager Now?", has("Crossbow"))
     rule("Arbalistic",             has("Crossbow"))
 
-    # Bullseye can be done with either bow or crossbow
+    # Can be done with either bow or crossbow
     rule("Bullseye",               has_any("Bow", "Crossbow"))
+    rule("Take Aim",               has_any("Bow", "Crossbow"))
+    rule("Sniper Duel",            has_any("Bow", "Crossbow"))
 
     # Trident advancements
     rule("A Throwaway Joke",       has("Trident"))
