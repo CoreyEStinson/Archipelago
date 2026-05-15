@@ -145,4 +145,5 @@ class MinecraftArchipelagoWorld(World):
         # SlotData.java reads these values — key names must match exactly.
         return {
             "advancement_goal": self.options.advancement_goal.value,
+            "death_link": bool(self.options.death_link.value),
         }
