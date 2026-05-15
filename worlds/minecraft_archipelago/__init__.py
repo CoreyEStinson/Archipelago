@@ -1,3 +1,4 @@
+import math
 from typing import Dict, Any, List
 
 from worlds.AutoWorld import World
@@ -116,13 +117,26 @@ class MinecraftArchipelagoWorld(World):
     def set_rules(self) -> None:
         apply_rules(self)
 
-        # Completion condition: the player can reach The End.
-        # The mod handles the actual advancement-percentage check at runtime
-        # and calls goalAchieved() when the threshold is met.
-        # This just tells the generator "the game is finishable
-        # once you can enter The End."
-        self.multiworld.completion_condition[self.player] = \
-            lambda state: state.can_reach("The End", "Region", self.player)
+        # Matches the mod's integer math
+        # mod checks: checked * 100 >= total * goalPercent
+        # which is eqivelent to: checked >= ceil(total * goalPercent / 100)
+        total = len(self.location_name_to_id)
+        required = max(1, math.ceil(
+            total * self.options.advancement_goal.value / 100
+        ))
+
+        def is_complete(state) -> bool:
+            # Count reachable locations, short-circut as soon as target is hit.
+            # Avoids checking all 112 locations every time this is evaluated.
+            count = 0
+            for loc_name in self.location_name_to_id:
+                if state.can_reach(loc_name, "Location", self.player):
+                    count += 1
+                    if count >= required:
+                        return True
+            return False
+        
+        self.multiworld.completion_condition[self.player] = is_complete
 
     # ── Slot data ─────────────────────────────────────────────────────────
 
