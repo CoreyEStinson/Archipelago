@@ -4,6 +4,8 @@ from typing import Dict, Any, List
 from worlds.AutoWorld import World
 from BaseClasses import Region, Location, Item
 
+from .locations import location_table, LOOT_CHECK_BASE_ID, LOOT_CHECK_MAX
+
 from .items import (
     item_table,
     unlock_items,
@@ -32,10 +34,13 @@ class MinecraftArchipelagoWorld(World):
     options_dataclass = MinecraftArchipelagoOptions
     options: MinecraftArchipelagoOptions
 
-    # These two dicts are required by Archipelago.
-    # They tell the server what item and location IDs this game uses.
     item_name_to_id = {name: data.code for name, data in item_table.items()}
-    location_name_to_id = {name: data.code for name, data in location_table.items()}
+
+    location_name_to_id = {
+        **{name: data.code for name, data in location_table.items()},
+        **{f"Loot Check {i + 1}": LOOT_CHECK_BASE_ID + i
+           for i in range(LOOT_CHECK_MAX)},
+    }
 
     # ── Region and location setup ─────────────────────────────────────────
 
@@ -51,7 +56,7 @@ class MinecraftArchipelagoWorld(World):
             "The End":   the_end,
         }
 
-        # Add every location from locations.py to its region
+        # Static advancement locations
         for loc_name, loc_data in location_table.items():
             target_region = region_map[loc_data.region]
             location = MinecraftArchipelagoLocation(
@@ -59,13 +64,20 @@ class MinecraftArchipelagoWorld(World):
             )
             target_region.locations.append(location)
 
-        # Connect regions with named entrances.
-        # These names must match exactly what rules.py passes to get_entrance().
-        menu.connect(overworld, "Menu -> Overworld")
-        overworld.connect(nether, "Overworld -> Nether")
-        nether.connect(the_end, "Nether -> The End")
+        # Dynamic loot check locations — count set per player in YAML
+        # All go in Overworld; no region gate (chests are accessible from the start)
+        for i in range(self.options.loot_check_count.value):
+            loc_name = f"Loot Check {i + 1}"
+            location = MinecraftArchipelagoLocation(
+                self.player, loc_name, LOOT_CHECK_BASE_ID + i, overworld
+            )
+            overworld.locations.append(location)
 
-        self.multiworld.regions += [menu, overworld, nether, the_end]
+            menu.connect(overworld, "Menu -> Overworld")
+            overworld.connect(nether, "Overworld -> Nether")
+            nether.connect(the_end, "Nether -> The End")
+
+            self.multiworld.regions += [menu, overworld, nether, the_end]
 
     # ── Item pool ─────────────────────────────────────────────────────────
 
@@ -85,20 +97,26 @@ class MinecraftArchipelagoWorld(World):
         for name in gamerule_items:
             pool.append(name)
 
+        total_locations = len(location_table) + self.options.loot_check_count.value
+
         # Fill any remaining slots with random filler items.
         # There are 112 locations and 39 important items, so we need 73 fillers.
         filler_pool = list(filler_items.keys())
         remaining = len(location_table) - len(pool)
 
-        if remaining < 0:
+        if total_locations < len(pool):
             raise Exception(
-                f"Too many items ({len(pool)}) for available locations ({len(location_table)})"
+                f"Too many items ({len(pool)}) for available locations ({total_locations})"
             )
 
+        # Fill every remaining slot from the filler pool.
+        # This covers both the advancement remainder and all loot check slots —
+        # the generator distributes them freely across all location types.
+        filler_pool = list(filler_items.keys())
+        remaining = total_locations - len(pool)
         for _ in range(remaining):
             pool.append(self.random.choice(filler_pool))
 
-        # Create Item objects and add them all to the multiworld pool
         for name in pool:
             self.multiworld.itempool.append(self.create_item(name))
 
@@ -145,5 +163,6 @@ class MinecraftArchipelagoWorld(World):
         # SlotData.java reads these values — key names must match exactly.
         return {
             "advancement_goal": self.options.advancement_goal.value,
+            "loot_check_count": self.options.loot_check_count.value,
             "death_link": bool(self.options.death_link.value),
         }
