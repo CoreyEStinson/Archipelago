@@ -142,6 +142,3 @@ location_table: Dict[str, LocationData] = {
     "With Our Powers Combined!":    LocationData(42111, "Overworld"),
     "Planting the Past":            LocationData(42112, "Overworld"),
 }
-
-LOOT_CHECK_BASE_ID = 42212
-LOOT_CHECK_MAX = 50
