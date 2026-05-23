@@ -31,6 +31,7 @@ location_table: Dict[str, LocationData] = {
     "Zombie Doctor":                LocationData(42012, "Overworld"),
     "Eye Spy":                      LocationData(42013, "Overworld"),
     "The End?":                     LocationData(42014, "Overworld"),
+    "Enchant Item":                 LocationData(42113, "Overworld"),
 
     # ── Nether tab ───────────────────────────────────────────────── Nether ─
 
@@ -69,8 +70,7 @@ location_table: Dict[str, LocationData] = {
     "Great View From Up Here":          LocationData(42044, "The End"),
 
     # ── Adventure tab ─────────────────────────────────────────── Overworld ─
-
-    "Heart Transplanter":           LocationData(42045, "Overworld"),
+    
     "Voluntary Exile":              LocationData(42046, "Overworld"),
     "Country Lode, Take Me Home":   LocationData(42047, "Overworld"),
     "Is It a Bird?":                LocationData(42048, "Overworld"),
@@ -114,6 +114,7 @@ location_table: Dict[str, LocationData] = {
     "Revaulting":                   LocationData(42086, "Overworld"),
     "Blowback":                     LocationData(42087, "Overworld"),
     "Over-Overkill":                LocationData(42088, "Overworld"),
+    "Crafters Crafting Crafters":   LocationData(42114, "Overworld"),
 
     # ── Husbandry tab ─────────────────────────────────────────── Overworld ─
 
@@ -141,4 +142,14 @@ location_table: Dict[str, LocationData] = {
     "The Cutest Predator":          LocationData(42110, "Overworld"),
     "With Our Powers Combined!":    LocationData(42111, "Overworld"),
     "Planting the Past":            LocationData(42112, "Overworld"),
+    "Kill Axolotl Target":          LocationData(42115, "Overworld"),
+    "Repair Wolf Armor":            LocationData(42116, "Overworld"),
+    "Whole Pack":                   LocationData(42117, "Overworld"),
+    "Remove Wolf Armor":            LocationData(42118, "Overworld"),
+
+    # ── Boss Kills ────────────────────────────────────────────────────────────
+    "Ender Dragon Kill":            LocationData(42119, "The End"),
+    "Wither Kill":                  LocationData(42120, "Nether"),
+    "Elder Guardian Kill":          LocationData(42121, "Overworld"),
+    "Warden Kill":                  LocationData(42122, "Overworld"),
 }

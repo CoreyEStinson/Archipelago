@@ -102,7 +102,7 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
     # Mining ancient debris needs diamond pickaxe
     rule("Hidden in the Depths",   tools(3))
 
-    # Full netherite armor set — needs netherite tools to mine debris too
+    # Full netherite armor set — needs diamond tools to mine debris
     rule("Cover Me in Debris",     armor(3))
 
     # ── Husbandry ─────────────────────────────────────────────────────────
@@ -110,5 +110,12 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
     # Leather boots needed to walk on powder snow
     rule("Light as a Rabbit",      armor(1))
 
-    # Netherite hoe — needs netherite tier tools
-    rule("Serious Dedication",     tools(4))
+    # ── Boss kills ────────────────────────────────────────────────────────────
+    # Ender Dragon Kill is already gated by The End region (Eye of Ender)
+    rule("Wither Kill",          has("Flint and Steel"))
+    rule("Warden Kill",          has("Warden Spawning"))
+    # Elder Guardian Kill has no gate
+
+    rule("Local Brewery",        has("Brewing Stand"))
+    rule("Bring Home the Beacon",has("Beacon"))
+    rule("Beaconator",           has("Beacon"))
