@@ -15,6 +15,9 @@ from .locations import location_table
 from .options import MinecraftArchipelagoOptions
 from .rules import set_rules as apply_rules
 
+LOOTABLE_CHECK_BASE_ID       = 42500
+TOTAL_LOOTABLE_CHECKS_DEFINED = 42   # how many are in locations.py
+
 
 class MinecraftArchipelagoItem(Item):
     game = "Minecraft Archipelago"
@@ -51,8 +54,17 @@ class MinecraftArchipelagoWorld(World):
             "The End":   the_end,
         }
 
+        lootable_limit = self.options.lootable_checks.value
+
         # Add every location from locations.py to its region
         for loc_name, loc_data in location_table.items():
+
+            # Skip lootable checks that exceed the configured limit for this game
+            if loc_data.code >= LOOTABLE_CHECK_BASE_ID:
+                index = loc_data.code - LOOTABLE_CHECK_BASE_ID  # 0-based
+                if index >= lootable_limit:
+                    continue
+
             target_region = region_map[loc_data.region]
             location = MinecraftArchipelagoLocation(
                 self.player, loc_name, loc_data.code, target_region
@@ -84,6 +96,15 @@ class MinecraftArchipelagoWorld(World):
         # Gamerule items — one copy each
         for name in gamerule_items:
             pool.append(name)
+
+        # Active locations = everything in location_table except the lootable checks
+        # that were skipped by create_regions(), plus however many ARE active.
+        lootable_limit    = self.options.lootable_checks.value
+        total_active      = (
+            len(location_table)
+            - TOTAL_LOOTABLE_CHECKS_DEFINED
+            + lootable_limit
+        )
 
         # Fill any remaining slots with random filler items.
         # There are 112 locations and 39 important items, so we need 73 fillers.
@@ -127,10 +148,12 @@ class MinecraftArchipelagoWorld(World):
 
         def is_complete(state) -> bool:
             # Count reachable locations, short-circut as soon as target is hit.
-            # Avoids checking all 112 locations every time this is evaluated.
+            # Avoids checking all locations every time this is evaluated.
+            # Only check locations that were actually added to the multiworld
+            # (some lootable checks may be skipped based on the lootable_checks option).
             count = 0
-            for loc_name in self.location_name_to_id:
-                if state.can_reach(loc_name, "Location", self.player):
+            for location in self.multiworld.get_locations(self.player):
+                if state.can_reach(location.name, "Location", self.player):
                     count += 1
                     if count >= required:
                         return True
@@ -146,4 +169,5 @@ class MinecraftArchipelagoWorld(World):
         return {
             "advancement_goal": self.options.advancement_goal.value,
             "death_link": bool(self.options.death_link.value),
+            "lootable_checks":  self.options.lootable_checks.value,
         }
