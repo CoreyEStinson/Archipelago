@@ -40,6 +40,31 @@ class MinecraftArchipelagoWorld(World):
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = {name: data.code for name, data in location_table.items()}
 
+
+    def generate_early(self) -> None:
+        # Clamp required_lootable_checks so it never exceeds the pool size
+        if self.options.required_lootable_checks.value \
+                > self.options.lootable_checks.value:
+            self.options.required_lootable_checks.value = \
+                self.options.lootable_checks.value
+            
+        # If lootable checks pool is empty, lootable win condition can't be active
+        if self.options.lootable_checks.value == 0:
+            self.options.required_lootable_checks.value = 0
+
+        # Validate at least one win condition must be active
+        advancement_active = self.options.advancement_goal > 0
+        bosses_active = len(self.options.required_boss_kills.value) > 0
+        lootable_active = self.options.required_lootable_checks.value > 0
+
+        if not (advancement_active or bosses_active or lootable_active):
+            raise Exception(
+                f"Minecraft Archipelago ({self.player_name}): No win conditions are "
+                f"active. Enable at least one: set advancement_goal > 0, add bosses to "
+                f"required_boss_kills, or set required_lootable_checks > 0."
+            )
+
+
     # ── Region and location setup ─────────────────────────────────────────
 
     def create_regions(self) -> None:
@@ -136,30 +161,49 @@ class MinecraftArchipelagoWorld(World):
     # ── Rules ─────────────────────────────────────────────────────────────
 
     def set_rules(self) -> None:
+
+        # Map used for building location-based boss kill conditions
+        _BOSS_LOCATION_NAMES = {
+            "ender_dragon": "Ender Dragon Kill",
+            "wither":        "Wither Kill",
+            "elder_guardian":"Elder Guardian Kill",
+            "warden":        "Warden Kill",
+        }
+
+        from .rules import set_rules as apply_rules
         apply_rules(self)
 
-        # Matches the mod's integer math
-        # mod checks: checked * 100 >= total * goalPercent
-        # which is eqivelent to: checked >= ceil(total * goalPercent / 100)
-        total = len(self.location_name_to_id)
-        required = max(1, math.ceil(
-            total * self.options.advancement_goal.value / 100
-        ))
+        conditions = []
 
-        def is_complete(state) -> bool:
-            # Count reachable locations, short-circut as soon as target is hit.
-            # Avoids checking all locations every time this is evaluated.
-            # Only check locations that were actually added to the multiworld
-            # (some lootable checks may be skipped based on the lootable_checks option).
-            count = 0
-            for location in self.multiworld.get_locations(self.player):
-                if state.can_reach(location.name, "Location", self.player):
-                    count += 1
-                    if count >= required:
-                        return True
-            return False
-        
-        self.multiworld.completion_condition[self.player] = is_complete
+        # ── Advancement goal ──────────────────────────────────────────────────
+        if self.options.advancement_goal.value > 0:
+            # Reaching The End is a strong proxy for overall progression.
+            # The actual % check is done at runtime by the mod.
+            conditions.append(
+                lambda state: state.can_reach("The End", "Region", self.player)
+            )
+
+        # ── Boss kills ────────────────────────────────────────────────────────
+        # Each required boss maps to a specific location that must be reachable.
+        # Existing rules.py rules handle region + item prerequisites correctly.
+        for boss in self.options.required_boss_kills.value:
+            loc_name = _BOSS_LOCATION_NAMES.get(boss)
+            if loc_name:
+                conditions.append(
+                    lambda state, ln=loc_name:
+                        state.can_reach(ln, "Location", self.player)
+                )
+
+        # ── Lootable checks ───────────────────────────────────────────────────
+        # All lootable check locations are in the Overworld with no gates,
+        # so they're always reachable — no extra condition needed here.
+
+        # ── Fallback (should not be hit due to generate_early validation) ─────
+        if not conditions:
+            conditions.append(lambda state: True)
+
+        self.multiworld.completion_condition[self.player] = \
+            lambda state: all(c(state) for c in conditions)
 
     # ── Slot data ─────────────────────────────────────────────────────────
 
@@ -168,6 +212,7 @@ class MinecraftArchipelagoWorld(World):
         # SlotData.java reads these values — key names must match exactly.
         return {
             "advancement_goal": self.options.advancement_goal.value,
-            "death_link": bool(self.options.death_link.value),
-            "lootable_checks":  self.options.lootable_checks.value,
+            "lootable_checks": self.options.lootable_checks.value,
+            "required_boss_kills": sorted(list(self.options.required_boss_kills.value)),
+            "required_lootable_checks": self.options.required_lootable_checks.value,
         }
