@@ -46,7 +46,38 @@ class RequiredBossKills(OptionSet):
     valid_keys = {"ender_dragon", "wither", "elder_guardian", "warden"}
     default = frozenset()
 
+class RequiredItemCollections(OptionSet):
+    """Which item collection sets must be completed as a win condition.
+    Any combination can be selected. All selected collections must be
+    completed to win. Leave empty to disable item collections as a win condition.
 
+    Collections track items you have EVER held in your inventory.
+    You do not need to hold them all simultaneously.
+
+    Valid values:
+      all_music_discs    - All 19 music discs
+      all_armor_sets     - Full sets of all 7 armor materials 
+        (Leather, Chainmail, Iron, Gold, Diamond, Netherite, and Turtle Helmet: 25 pieces total)
+      all_pottery_sherds - All 23 pottery sherds
+      all_trims          - All 19 armor trim smithing templates (including the netherite upgrade template)
+      rare_items         - 6 rare items: Mace, Elytra, Trident, Enchanted Golden Apple, Totem, Conduit
+      all_flowers        - All 19 flower types
+      all_heads          - All 6 mob heads
+      all_dyes           - All 16 dyes
+      all_weapons        - 6 weapon types: Diamond Sword, Bow, Crossbow, Trident, Mace, Shield"""
+    display_name = "Required Item Collections"
+    valid_keys   = {
+        "all_music_discs",
+        "all_armor_sets",
+        "all_pottery_sherds",
+        "all_trims",
+        "rare_items",
+        "all_flowers",
+        "all_heads",
+        "all_dyes",
+        "all_weapons",
+    }
+    default = frozenset()
 @dataclass
 class MinecraftArchipelagoOptions(PerGameCommonOptions):
     advancement_goal: AdvancementGoal
@@ -54,3 +85,4 @@ class MinecraftArchipelagoOptions(PerGameCommonOptions):
     lootable_checks: LootableChecks
     required_lootable_checks: RequiredLootableChecks
     required_boss_kills: RequiredBossKills
+    required_item_collections: RequiredItemCollections

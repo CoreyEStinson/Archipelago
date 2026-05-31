@@ -47,21 +47,23 @@ class MinecraftArchipelagoWorld(World):
                 > self.options.lootable_checks.value:
             self.options.required_lootable_checks.value = \
                 self.options.lootable_checks.value
-            
+
         # If lootable checks pool is empty, lootable win condition can't be active
         if self.options.lootable_checks.value == 0:
             self.options.required_lootable_checks.value = 0
 
-        # Validate at least one win condition must be active
-        advancement_active = self.options.advancement_goal > 0
-        bosses_active = len(self.options.required_boss_kills.value) > 0
-        lootable_active = self.options.required_lootable_checks.value > 0
+        # Validate: at least one win condition must be active
+        advancement_active  = self.options.advancement_goal.value > 0
+        bosses_active       = len(self.options.required_boss_kills.value) > 0
+        lootable_active     = self.options.required_lootable_checks.value > 0
+        collections_active  = len(self.options.required_item_collections.value) > 0  # NEW
 
-        if not (advancement_active or bosses_active or lootable_active):
+        if not (advancement_active or bosses_active or lootable_active or collections_active):
             raise Exception(
                 f"Minecraft Archipelago ({self.player_name}): No win conditions are "
                 f"active. Enable at least one: set advancement_goal > 0, add bosses to "
-                f"required_boss_kills, or set required_lootable_checks > 0."
+                f"required_boss_kills, set required_lootable_checks > 0, or add "
+                f"collections to required_item_collections."
             )
 
 
@@ -215,4 +217,5 @@ class MinecraftArchipelagoWorld(World):
             "lootable_checks": self.options.lootable_checks.value,
             "required_boss_kills": sorted(list(self.options.required_boss_kills.value)),
             "required_lootable_checks": self.options.required_lootable_checks.value,
+            "required_item_collections": sorted(list(self.options.required_item_collections.value)),
         }
