@@ -214,6 +214,7 @@ class MinecraftArchipelagoWorld(World):
         # SlotData.java reads these values — key names must match exactly.
         return {
             "advancement_goal": self.options.advancement_goal.value,
+            "death_link": self.options.death_link.value,
             "lootable_checks": self.options.lootable_checks.value,
             "required_boss_kills": sorted(list(self.options.required_boss_kills.value)),
             "required_lootable_checks": self.options.required_lootable_checks.value,
