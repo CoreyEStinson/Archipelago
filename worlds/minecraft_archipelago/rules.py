@@ -20,7 +20,7 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
         return lambda state: all(state.has(i, player) for i in items)
     
     def tools(tier: int):
-        """tier 1=stone, 2=iron, 3=diamond, 3=netherite"""
+        """tier 1=stone, 2=iron, 3=diamond, 4=netherite"""
         return lambda state: state.has("Progressive Tools", player, tier)
     
     def armor(tier: int):
