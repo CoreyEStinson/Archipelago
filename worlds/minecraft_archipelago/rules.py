@@ -40,8 +40,15 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
         has("Eye of Ender")
     
     # Helper
-    def rule(location: str, condition) -> None:
-        set_rule(mw.get_location(location, player), condition)
+    def rule(location: str, *conditions) -> None:
+        if not conditions:
+            return
+        elif len(conditions) == 1:
+            combined = conditions[0]
+        else:
+            def combined(state):
+                return all(cond(state) for cond in conditions)
+        set_rule(mw.get_location(location, player), combined)
 
 
     # ── Story ─────────────────────────────────────────────────────────────
