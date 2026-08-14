@@ -23,7 +23,7 @@ class LootableChecks(Range):
     Set to 0 to disable lootable checks."""
     display_name = "Lootable Checks"
     range_start = 0
-    range_end = 41
+    range_end = 50
     default = 20
 
 
@@ -32,7 +32,7 @@ class RequiredLootableChecks(Range):
     checks win condition. Set to 0 to disable. Cannot exceed Lootable Checks."""
     display_name = "Required Lootable Checks"
     range_start  = 0
-    range_end    = 42
+    range_end    = 50
     default      = 0
 
 

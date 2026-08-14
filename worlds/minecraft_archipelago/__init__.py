@@ -15,8 +15,8 @@ from .locations import location_table
 from .options import MinecraftArchipelagoOptions
 from .rules import set_rules as apply_rules
 
-LOOTABLE_CHECK_BASE_ID       = 42500
-TOTAL_LOOTABLE_CHECKS_DEFINED = 42   # how many are in locations.py
+LOOTABLE_CHECK_BASE_ID       = 22000
+TOTAL_LOOTABLE_CHECKS_DEFINED = 50   # how many are in locations.py
 
 
 class MinecraftArchipelagoItem(Item):
