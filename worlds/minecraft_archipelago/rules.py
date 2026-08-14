@@ -20,11 +20,11 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
         return lambda state: all(state.has(i, player) for i in items)
     
     def tools(tier: int):
-        """tier 1=stone, 2=iron, 3=diamond, 3=netherite"""
+        """tier 1=stone, 2=gold, 3=iron, 4=diamond, 5=netherite"""
         return lambda state: state.has("Progressive Tools", player, tier)
-    
+
     def armor(tier: int):
-        """tier 1=leather, 2=iron, 3=diamond, 4=netherite"""
+        """tier 1=leather, 2=gold, 3=chainmail, 4=iron, 5=diamond, 6=netherite"""
         return lambda state: state.has("Progressive Armor", player, tier)
     
     # ── Region entrance rules ─────────────────────────────────────────────
@@ -60,7 +60,7 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
     rule("Zombie Doctor",          has("Golden Apple"))
 
     # Cover Me with Diamonds requires diamond armor
-    rule("Cover Me with Diamonds", armor(2))
+    rule("Cover Me with Diamonds", armor(5))
 
     # ── Adventure ─────────────────────────────────────────────────────────
 
@@ -107,10 +107,10 @@ def set_rules(world: "MinecraftArchipelagoWorld") -> None:
     # ── Nether (already gated by region, adding extra requirements) ───────
 
     # Mining ancient debris needs diamond pickaxe
-    rule("Hidden in the Depths",   tools(3))
+    rule("Hidden in the Depths",   tools(4))
 
-    # Full netherite armor set — needs diamond tools to mine debris
-    rule("Cover Me in Debris",     armor(3))
+    # Full netherite armor set — needs diamond tools to mine debris and smithing table to apply netherite
+    rule("Cover Me in Debris",     tools(4), has("Smithing Table"))
 
     # ── Husbandry ─────────────────────────────────────────────────────────
 

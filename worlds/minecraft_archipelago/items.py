@@ -11,17 +11,21 @@ ITEM_BASE_ID = 43000
 
 # ── Progressive unlock items ───────────────────────────────────────────────
 # Sent multiple times. The mod tracks receipt count and applies the
-# matching stage tier (stone → iron → diamond → netherite).
+# matching stage tier (stone → gold → iron → diamond → netherite).
 # ──────────────────────────────────────────────────────────────────────────
 
 progressive_items: Dict[str, ItemData] = {
-    "Progressive Tools":  ItemData(43000, ItemClassification.progression),
-    "Progressive Armor":  ItemData(43001, ItemClassification.progression),
+    "Progressive Tools":         ItemData(43000, ItemClassification.progression),
+    "Progressive Armor":         ItemData(43001, ItemClassification.progression),
+    "Progressive Tools (Gift)":  ItemData(43129, ItemClassification.useful),
+    "Progressive Armor (Gift)":  ItemData(43130, ItemClassification.useful),
 }
 
 PROGRESSIVE_ITEM_COUNTS = {
-    "Progressive Tools": 4,  # stone, iron, diamond, netherite
-    "Progressive Armor": 4,  # leather, iron, diamond, netherite
+    "Progressive Tools":         5,  # stone, gold, iron, diamond, netherite
+    "Progressive Armor":         6,  # leather, gold, chainmail, iron, diamond, netherite
+    "Progressive Tools (Gift)":  6,  # wooden, stone, gold, iron, diamond, netherite
+    "Progressive Armor (Gift)":  6,  # leather, gold, chainmail, iron, diamond, netherite
 }
 
 # ── Individual unlock items ────────────────────────────────────────────────
@@ -130,33 +134,12 @@ filler_items: Dict[str, ItemData] = {
     "Golden Carrot (Gift)":       ItemData(43073, ItemClassification.filler),
 
     # — Weapons to give ————————————————————————————————————————————————————
-    "Wooden Sword (Gift)":        ItemData(43074, ItemClassification.filler),
-    "Stone Sword (Gift)":         ItemData(43075, ItemClassification.filler),
-    "Iron Sword (Gift)":          ItemData(43076, ItemClassification.filler),
-    "Diamond Sword (Gift)":       ItemData(43077, ItemClassification.filler),
-    "Wooden Axe (Gift)":          ItemData(43078, ItemClassification.filler),
-    "Stone Axe (Gift)":           ItemData(43079, ItemClassification.filler),
-    "Iron Axe (Gift)":            ItemData(43080, ItemClassification.filler),
-    "Diamond Axe (Gift)":         ItemData(43081, ItemClassification.filler),
-    "Leather Armor (Gift)":       ItemData(43082, ItemClassification.filler),
-    "Iron Armor (Gift)":          ItemData(43083, ItemClassification.filler),
-    "Diamond Armor (Gift)":       ItemData(43084, ItemClassification.filler),
     "Trident (Gift)":      ItemData(43085, ItemClassification.filler),
     "Mace (Gift)":         ItemData(43086, ItemClassification.filler),
     "Bow (Gift)":          ItemData(43087, ItemClassification.filler),
     "Crossbow (Gift)":     ItemData(43088, ItemClassification.filler),
     "Arrow (Gift)":        ItemData(43089, ItemClassification.filler),
     "Shield (Gift)":       ItemData(43090, ItemClassification.filler),
-
-    # — Tools to give ——————————————————————————————————————————————————————
-    "Wooden Pickaxe (Gift)":      ItemData(43091, ItemClassification.filler),
-    "Stone Pickaxe (Gift)":       ItemData(43092, ItemClassification.filler),
-    "Iron Pickaxe (Gift)":        ItemData(43093, ItemClassification.filler),
-    "Diamond Pickaxe (Gift)":     ItemData(43094, ItemClassification.filler),
-    "Wooden Shovel (Gift)":       ItemData(43095, ItemClassification.filler),
-    "Stone Shovel (Gift)":        ItemData(43096, ItemClassification.filler),
-    "Iron Shovel (Gift)":         ItemData(43097, ItemClassification.filler),
-    "Diamond Shovel (Gift)":      ItemData(43098, ItemClassification.filler),
 
     # — Blocks ————————————————————————————————————————————————————————————
     "Cobblestone (Gift)":         ItemData(43099, ItemClassification.filler),
